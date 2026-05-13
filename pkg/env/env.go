@@ -39,6 +39,7 @@ type Data struct {
 	OrkaVMUsername string
 	OrkaVMPassword string
 	OrkaVMMetadata string
+	RunnerLabels   []string
 
 	OrkaEnableNodeIPMapping bool
 	OrkaNodeIPMapping       map[string]string
@@ -77,6 +78,7 @@ func ParseEnv() *Data {
 		OrkaVMUsername: getEnvWithDefault(OrkaVMUsernameEnvName, "admin"),
 		OrkaVMPassword: getEnvWithDefault(OrkaVMPasswordEnvName, "admin"),
 		OrkaVMMetadata: getEnvWithDefault(OrkaVMMetadataEnvName, ""),
+		RunnerLabels:   parseRunnerLabels(os.Getenv(RunnerLabelsEnvName)),
 
 		OrkaEnableNodeIPMapping: getBoolEnv(OrkaEnableNodeIPMappingEnvName, false),
 
@@ -264,4 +266,18 @@ func validateEnv(envData *Data) []string {
 func validateMetadata(metadata string) bool {
 	r, _ := regexp.Compile(`^(\w+=\w+)(,\s*\w+=\w+)*$`)
 	return r.MatchString(metadata)
+}
+
+func parseRunnerLabels(raw string) []string {
+	if raw == "" {
+		return nil
+	}
+	parts := strings.Split(raw, ",")
+	labels := make([]string, 0, len(parts))
+	for _, p := range parts {
+		if trimmed := strings.TrimSpace(p); trimmed != "" {
+			labels = append(labels, trimmed)
+		}
+	}
+	return labels
 }

@@ -56,6 +56,7 @@ The Orka GitHub runner requires the following environment variabales to be confi
 * `ORKA_VM_USERNAME`: Specifies the username for the deployed VMs. If no value is provided, it defaults to admin.
 * `ORKA_VM_PASSWORD`: Specifies the password for the deployed VMs. If no value is provided, it defaults to admin.
 * `ORKA_VM_METADATA`: Specifies custom VM metadata passed to the VM. Must be formatted as key=value comma separated pairs.
+* `RUNNER_LABELS`: (Optional) A comma-separated list of custom labels to assign to the GitHub Actions runner scale set. These labels can be referenced in the `runs-on` field of GitHub Actions workflows in addition to the runner name. Example: `RUNNER_LABELS="self-hosted,macOS,arm64"`. The runner name is always included as a label automatically.
 * `ORKA_ENABLE_NODE_IP_MAPPING`: Specifies whether to enable the mapping of Orka node IPs to external IPs.
 * `ORKA_NODE_IP_MAPPING`: Defines the mapping of Orka node internal IPs to external host IPs.
 * `RUNNERS`: A JSON array containing configuration details of the GitHub runner scale set that will be created. Currently only one runner is supported. See [here](#how-to-use-multiple-runners) for how to use multiple runners. Example usage: `RUNNERS='[{"name":"my-github-runner", "id": 1}]'`. The `name` field should match the value specified in the `runs-on` field in the Actions workflow. The `id` field should be used to differentiate runners with GitHub. We default to `1` if it is not defined. See an example [here](./examples/ci.yml).

@@ -30,4 +30,15 @@ var _ = Describe("Env Test", func() {
 		Entry("with invalid string with empty value, should be invalid", "key1=", false),
 		Entry("with invalid string with no equals sign, should be invalid", "key1;value1", false),
 	)
+
+	DescribeTable("when parsing runner labels",
+		func(input string, expected []string) {
+			Expect(parseRunnerLabels(input)).To(Equal(expected))
+		},
+		Entry("with empty string, should return nil", "", nil),
+		Entry("with single label, should return one label", "self-hosted", []string{"self-hosted"}),
+		Entry("with multiple labels, should return all labels", "self-hosted,macOS,arm64", []string{"self-hosted", "macOS", "arm64"}),
+		Entry("with labels containing spaces after comma, should trim spaces", "self-hosted, macOS, arm64", []string{"self-hosted", "macOS", "arm64"}),
+		Entry("with labels containing leading/trailing spaces, should trim spaces", " self-hosted , macOS ", []string{"self-hosted", "macOS"}),
+	)
 })

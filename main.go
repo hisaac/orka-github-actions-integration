@@ -73,12 +73,7 @@ func main() {
 	runnerScaleSet, err := actionsClient.CreateRunnerScaleSet(ctx, &types.RunnerScaleSet{
 		Name:          runnerName,
 		RunnerGroupId: groupId,
-		Labels: []types.RunnerScaleSetLabel{
-			{
-				Name: runnerName,
-				Type: "System",
-			},
-		},
+		Labels:        buildRunnerLabels(runnerName, envData.RunnerLabels),
 		RunnerSetting: types.RunnerScaleSetSetting{
 			Ephemeral:     true,
 			DisableUpdate: true,
@@ -119,4 +114,20 @@ func run(ctx context.Context, actionsClient *actions.ActionsClient, orkaClient *
 	if err = runnerMessageProcessor.StartProcessingMessages(); err != nil {
 		logger.Errorf("failed to start processing messages for runnerScaleSet %s: %w", runnerScaleSet.Name, err.Error())
 	}
+}
+
+func buildRunnerLabels(runnerName string, customLabels []string) []types.RunnerScaleSetLabel {
+	labels := []types.RunnerScaleSetLabel{
+		{
+			Name: runnerName,
+			Type: "System",
+		},
+	}
+	for _, l := range customLabels {
+		labels = append(labels, types.RunnerScaleSetLabel{
+			Name: l,
+			Type: "User",
+		})
+	}
+	return labels
 }
